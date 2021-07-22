@@ -1,29 +1,18 @@
-TARGET = app
+# the compiler: gcc for C program, define as g++ for C++
+  CC = gcc
 
-SRCS  = $(shell find ./src     -type f -name *.cpp)
-HEADS = $(shell find ./include -type f -name *.h)
-OBJS = $(SRCS:.cpp=.o)
-DEPS = Makefile.depend
+  # compiler flags:
+  #  -g    adds debugging information to the executable file
+  #  -Wall turns on most, but not all, compiler warnings
+  CFLAGS  = -g -Wall
 
-INCLUDES = -I./include
-CXXFLAGS = -O2 -Wall $(INCLUDES)
-LDFLAGS = -lm
+  # the build target executable:
+  TARGET = myprog
 
+  all: $(TARGET)
 
-all: $(TARGET)
+  $(TARGET): $(TARGET).c
+  	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c
 
-$(TARGET): $(OBJS) $(HEADS)
-	$(CXX) $(LDFLAGS) -o $@ $(OBJS)
-
-run: all
-	@./$(TARGET)
-
-.PHONY: depend clean
-depend:
-	$(CXX) $(INCLUDES) -MM $(SRCS) > $(DEPS)
-	@sed -i -E "s/^(.+?).o: ([^ ]+?)\1/\2\1.o: \2\1/g" $(DEPS)
-
-clean:
-	$(RM) $(OBJS) $(TARGET)
-
--include $(DEPS)
+  clean:
+  	$(RM) $(TARGET)
